@@ -11,6 +11,7 @@ import test.mypac.WeaponImpl;
  *  
  *  - 즉 필요한 핵심 의존객체의 생성과 관리를 하는 무언가가 필요하다 
  *    그걸 대신 해주는게 스프링 프레임 워크이다. 
+ *  - 느슨하게 하는 이유: 객체간 영향을 덜 주기 위해서(유지보수 편하게 하기 위해서)
  */
 public class MainClass {
 	public static void main(String[] args) {
