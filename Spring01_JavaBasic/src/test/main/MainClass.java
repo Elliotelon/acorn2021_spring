@@ -21,6 +21,7 @@ public class MainClass {
 		Weapon w1=new WeaponImpl();
 		//해당객체의 메소드를 호출함으로써 목적을 달성했다. 
 		w1.attack();
+		
 	}
 }
 
