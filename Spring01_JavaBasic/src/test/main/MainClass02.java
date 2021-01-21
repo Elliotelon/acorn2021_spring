@@ -17,6 +17,7 @@ public class MainClass02 {
 		 * w라는 이름의 지역변수에 참조값을 담기 
 		 */
 		Weapon w=(Weapon)context.getBean("myWeapon");
+		//메소드 호출해서 원하는 목적 달성하기
 		w.attack();
 	}
 }
