@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>/views/home.jsp</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.css" />
+<link rel="stylesheet" href="resources/css/bootstrap.css" />
 </head>
 <body>
 <div class="container">
@@ -14,6 +14,9 @@
 	<ul>
 		<li><a href="test/play.html">놀러가기(DispatcherServlet을 거치지 않음)</a></li>
 		<li><a href="test/study.jsp">공부하러가기(DispatcherServlet을 거치지 않음)</a></li>
+		<li><a href="friend/list.do">친구 목록보기</a></li>
+		<li><a href="friend/list2.do">친구 목록보기2</a></li>
+		
 	</ul>
 	<h2>공지 사항 입니다.</h2>
 	<ul>
