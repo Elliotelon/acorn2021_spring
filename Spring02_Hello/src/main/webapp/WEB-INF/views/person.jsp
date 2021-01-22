@@ -7,6 +7,8 @@
 <title>/views/person.jsp</title>
 </head>
 <body>
-<p>오늘의 인물:${requestScope.person }</p>
+<h1>오늘의 인물 페이지</h1>
+<p>오늘의 인물:<strong>${requestScope.person }</strong></p>
+<a href="home.do">인덱스로 가기</a>
 </body>
 </html>
