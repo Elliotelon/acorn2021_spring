@@ -29,7 +29,11 @@
 	 -->
 	
 	
-	<!-- SqlSessionFactory 객체 -->
+	<!-- 
+		SqlSessionFactory 객체 
+		아래의
+		value="classpath: 여기에 Configuration.xml 문서의 위치를 정확히 작성한다."
+	-->
 	<beans:bean id="sessionFactory" 
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSource"/>
@@ -44,6 +48,8 @@
 	
 
 	<!-- 
+		*위의 43번줄까지 코드들은 아래의 SqlSessionTemplate 객체를 위한 사전 작업임*
+		
 		SqlSession 인터페이스를 구현한 
 		SqlSessionTemplate(SqlSession) 객체 
 		Dao 가 의존하는 객체 

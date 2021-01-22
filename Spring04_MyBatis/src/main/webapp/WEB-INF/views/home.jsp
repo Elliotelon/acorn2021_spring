@@ -8,6 +8,11 @@
 <title>/views/home.jsp</title>
 </head>
 <body>
-<p>hello</p>
+<div class="container">
+	<h1>인덱스 페이지 입니다.</h1>
+	<ul>
+		<li><a href="member/list.do">회원 목록보기</a></li>
+	</ul>
+</div>
 </body>
 </html>
