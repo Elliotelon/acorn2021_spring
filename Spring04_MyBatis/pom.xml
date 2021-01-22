@@ -173,9 +173,7 @@
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-tx</artifactId>
 		    <version>4.0.0.RELEASE</version>
-		</dependency>		  			
-
-		       
+		</dependency>		  				       
 	</dependencies>
     <build>
         <plugins>
