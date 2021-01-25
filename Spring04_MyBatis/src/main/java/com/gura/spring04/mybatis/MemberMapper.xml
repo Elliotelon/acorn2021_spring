@@ -6,4 +6,22 @@
 		FROM member
 		ORDER BY num ASC
 	</select>
+	<insert id="insert" parameterType="com.gura.spring04.member.dto.MemberDto">
+		INSERT INTO member
+		(num,name,addr)
+		VALUES(member_seq.NEXTVAL,#{name} ,#{addr})
+	</insert>
+	<update id="update" parameterType="com.gura.spring04.member.dto.MemberDto">
+		UPDATE member
+		SET name=#{name}, addr=#{addr}
+		WHERE num=#{num}
+	</update>
+	<delete id="delete" parameterType="int">
+		DELETE FROM member 
+		WHERE num=#{num}
+	</delete>
+	<select id="getData" resultType="com.gura.spring04.member.dto.MemberDto" parameterType="int">
+		SELECT num, name, addr
+		FROM member WHERE num=#{num}
+	</select>
 </mapper>
