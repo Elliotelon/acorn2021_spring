@@ -1,6 +1,7 @@
 package com.gura.spring04.member.dao;
 
 import java.util.List;
+
 import com.gura.spring04.member.dto.MemberDto;
 
 public interface MemberDao {
@@ -14,6 +15,4 @@ public interface MemberDao {
 	public void delete(int num);
 	//회원 한명의 정보를 리턴하는 메소드
 	public MemberDto getData(int num);
-	
-	
 }
