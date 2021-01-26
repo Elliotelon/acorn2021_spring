@@ -21,7 +21,7 @@ public class UsersController {
 		return "users/signup_form";
 	}
 	
-	@RequestMapping(value="/checkid.do", method=RequestMethod.GET)
+	@RequestMapping("/users/checkid")
 	public String checkId(HttpServletRequest req) {
 		String inputId=req.getParameter("inputId");
 		boolean isExistId=service.isExistId(inputId);
