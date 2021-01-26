@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gura.spring05.users.service.UsersService;
@@ -20,7 +21,7 @@ public class UsersController {
 		return "users/signup_form";
 	}
 	
-	@RequestMapping("/users/checkid")
+	@RequestMapping(value="/checkid.do", method=RequestMethod.GET)
 	public String checkId(HttpServletRequest req) {
 		String inputId=req.getParameter("inputId");
 		boolean isExistId=service.isExistId(inputId);

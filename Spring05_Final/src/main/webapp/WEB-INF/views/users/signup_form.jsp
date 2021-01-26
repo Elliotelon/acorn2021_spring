@@ -22,6 +22,7 @@
 			<input class="form-control" type="text" name="id" id="id"/>
 			<small class="form-text text-muted">영문자 소문자로 시작하고 5글자~10글자 이내로 입력하세요.</small>
 			<div class="invalid-feedback">사용할수 없는 아이디 입니다</div>
+			
 		</div>
 		<div class="form-group">
 			<label for="pwd">비밀번호</label>
