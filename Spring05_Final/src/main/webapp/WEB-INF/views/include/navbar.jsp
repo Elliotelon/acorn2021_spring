@@ -43,13 +43,13 @@
 			%>
 			<%if(id==null){ %>
 				<a class="btn btn-success btn-sm" 
-				href="${pageContext.request.contextPath }/users/loginform.jsp">로그인</a>
+				href="${pageContext.request.contextPath }/users/loginform.do">로그인</a>
 				<a class="btn btn-danger btn-sm ml-1" 
-				href="${pageContext.request.contextPath }/users/signup_form.jsp">회원가입</a>
+				href="${pageContext.request.contextPath }/users/signup_form.do">회원가입</a>
 			<%}else{ %>
 				<span class="navbar-text">
-					<a href="${pageContext.request.contextPath }/users/private/info.jsp"><%=id %></a>
-					<a class="btn btn-warning btn-sm" href="${pageContext.request.contextPath }/users/logout.jsp">로그아웃</a>
+					<a href="${pageContext.request.contextPath }/users/private/info.do"><%=id %></a>
+					<a class="btn btn-warning btn-sm" href="${pageContext.request.contextPath }/users/logout.do">로그아웃</a>
 				</span>
 			<%} %>	
 		</div>
