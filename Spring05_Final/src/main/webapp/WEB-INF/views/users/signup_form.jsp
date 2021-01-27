@@ -16,7 +16,7 @@
 		<input type="email" />  같은경우 웹브라우저가 직접 개입하기도 한다.
 		해당기능 사용하지 않기 위해서는 novalidate 를 form 에 명시해야 한다. 
 	 -->
-	<form action="signup.do" method="post" id="myForm" novalidate>
+	<form action="${pageContext.request.contextPath}/users/signup.do" method="post" id="myForm" novalidate>
 		<div class="form-group">
 			<label for="id">아이디</label>
 			<input class="form-control" type="text" name="id" id="id"/>
@@ -141,7 +141,7 @@
 			return;
 		}
 		$.ajax({
-			url:"checkid.do",
+			url:"${pageContext.request.contextPath}/users/checkid.do",
 			method:"GET",
 			data:"inputId="+inputId,
 			success:function(responseData){
