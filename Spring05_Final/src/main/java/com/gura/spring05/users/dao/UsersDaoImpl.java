@@ -40,13 +40,18 @@ public class UsersDaoImpl implements UsersDao {
 	}
 
 	@Override
-	public void updatePwd(UsersDto dto) {
+	public boolean updatePwd(UsersDto dto) {
 		/*
 		 * mapper namespace => users
 		 * sql id => updatePwd
 		 * parameterType => UsersDto
 		 */
-		session.update("users.updatePwd",dto);
+		int count=session.update("users.updatePwd",dto);
+		if(count==0) {
+			return false;
+		}else {
+			return true;
+		}
 	}
 
 	@Override

@@ -28,9 +28,9 @@
 	</delete>
 	<select id="getData" parameterType="String"
 	resultType="usersDto">
-		SELECT pwd,email,profile,
 		<!-- 칼럼명과 필드명이 같아야 하기때문에 AS regdate 붙여야 함. -->
-		TO_CHAR(regdate, 'YY.MM.DD HH24:MI) AS regdate 
+		SELECT pwd,email,profile,
+			TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate
 		FROM users
 		WHERE id=#{id}
 	</select>

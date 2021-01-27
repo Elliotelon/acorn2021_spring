@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,45 @@ public class UsersController {
 	
 	@Autowired
 	private UsersService service;
+
+	//비밀번호 수정 요청처리
+	@RequestMapping("/users/private/pwd_update")
+	public ModelAndView pwd_update(@ModelAttribute UsersDto dto,
+			ModelAndView mView, HttpSession session) {
+		//UsersDto 에는 폼전송된 아이디, 구비밀번호, 새비밀번호가 담겨 있다.
+		service.updateUserPwd(mView, dto, session);
+		mView.setViewName("users/private/pwd_update");
+		return mView;
+	}
+	//비밀번호 수정 폼 요청 처리
+	@RequestMapping("users/private/pwd_updateform")
+	public String pwd_updateform() {
+		return "users/private/pwd_updateform";
+	}
+	//회원 탈퇴 요청처리
+	@RequestMapping("users/private/delete")
+	public String delete(HttpSession session) {
+		service.deleteUser(session);
+		return "users/private/delete";
+	}
 	
+	//개인정보 보기 요청처리
+	@RequestMapping("users/private/info")
+	public ModelAndView info(HttpSession session,
+			ModelAndView mView) {
+		service.getInfo(mView, session);
+		mView.setViewName("users/private/info");
+		return mView;
+	}
+
+	//로그아웃 요청 처리
+	@RequestMapping("/users/logout")
+	public String logout(HttpSession session) {
+		//session.invalidate(); //세션 초기화
+		session.removeAttribute("id"); //세션에서 id 삭제
+		
+		return "users/logout";
+	}
 	@RequestMapping(value="/users/login", method=RequestMethod.POST)
 	public String login(HttpServletRequest request,
 			HttpServletResponse response) {
