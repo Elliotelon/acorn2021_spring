@@ -29,5 +29,7 @@ public interface UsersService {
 	//프로필 이미지를 upload 폴더에 저장하고 저장된 파일명을 DB에 저장하는 메소드
 	public void saveProfileImage(MultipartFile image,
 			HttpServletRequest request);
+	//개인정보를 수정하는 메소드(여기에서는 이메일주소만)
+	public void updateUser(UsersDto dto, HttpSession session);
 	
 }

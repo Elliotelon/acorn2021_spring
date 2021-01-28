@@ -189,4 +189,14 @@ public class UsersServiceImpl implements UsersService{
 		//dao를 이용해서 수정 반영하기
 		dao.updateProfile(dto);
 	}
+
+	@Override
+	public void updateUser(UsersDto dto, HttpSession session) {
+		//로그인된 아이디를 읽어온다.
+		String id=(String)session.getAttribute("id");
+		//dto에 담는다.
+		dto.setId(id);
+		//dao를 이용해서 DB에 수정 반영한다.
+		dao.update(dto);
+	}
 }
