@@ -31,7 +31,7 @@
 		
 		
 	</a>
-	<form action="update.jsp" method="post">
+	<form action="update.do" method="post">
 		<div>
 			<label for="id">아이디</label>
 			<input type="text" id="id" value="" disabled/>
@@ -43,7 +43,7 @@
 		<button type="submit">수정확인</button>
 		<button type="reset">취소</button>
 	</form>
-	<form action="profile_upload.jsp" method="post" 
+	<form action="profile_upload.do" method="post" 
 		enctype="multipart/form-data" id="profileForm">
 		<label for="image">프로필 이미지 선택</label>
 		<input type="file" name="image" id="image" accept=".jpg, .jpeg, .png, .JPG, .JPEG"/>
