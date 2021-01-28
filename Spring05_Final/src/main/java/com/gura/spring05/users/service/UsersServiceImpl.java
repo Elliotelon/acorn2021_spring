@@ -1,5 +1,6 @@
 package com.gura.spring05.users.service;
 
+import java.io.File;
 import java.net.URLEncoder;
 
 import javax.servlet.http.Cookie;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gura.spring05.users.dao.UsersDao;
@@ -151,5 +153,40 @@ public class UsersServiceImpl implements UsersService{
 		}
 		//성공 여부를 ModelAndView 객체에 담는다.
 		mView.addObject("isSuccess",isSuccess); 
+	}
+
+	@Override
+	public void saveProfileImage(MultipartFile image, 
+			HttpServletRequest request) {
+		//원본 파일명
+		String orgFileName=image.getOriginalFilename();
+		//파일의 크기
+		//파일을 저장할 실제 경로 "/webapp/upload"
+		String realPath=request.getServletContext().getRealPath("/upload");
+		
+		File f=new File(realPath);
+		if(!f.exists()) {//만일 존재 하지 않으면
+			f.mkdir(); //폴더를 만든다.
+		}
+		//절대 중복이 되지 않을만한 저장할 파일명을 구성한다.
+		String saveFileName=System.currentTimeMillis()+orgFileName;
+		//저장할 파일의 전체 경로를 구성한다.
+		String path=realPath+File.separator+saveFileName;
+		try {
+			//임시폴더에 업로드된 파일을 원하는 위치에 원하는 파일명으로 이동 시킨다.
+			image.transferTo(new File(path));
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		//DB에 저장할 이미지의 경로
+		String profile="/upload/"+saveFileName;
+		//로그인된 아이디
+		String id=(String)request.getSession().getAttribute("id");
+		//수정할 정보를 dto에 담기
+		UsersDto dto=new UsersDto();
+		dto.setId(id);
+		dto.setProfile(profile);
+		//dao를 이용해서 수정 반영하기
+		dao.updateProfile(dto);
 	}
 }

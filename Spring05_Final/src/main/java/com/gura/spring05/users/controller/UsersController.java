@@ -1,5 +1,6 @@
 package com.gura.spring05.users.controller;
 
+import java.io.File;
 import java.net.URLEncoder;
 
 import javax.servlet.http.Cookie;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gura.spring05.users.dao.UsersDao;
@@ -25,7 +27,27 @@ public class UsersController {
 	
 	@Autowired
 	private UsersService service;
-
+	
+	//개인정보 수정폼 요청 처리
+	@RequestMapping("/users/private/updateform")
+	public ModelAndView updateform(ModelAndView mView,
+			HttpSession session) {
+		service.getInfo(mView, session);
+		mView.setViewName("users/private/updateform");
+		return mView;
+	}
+	
+	//프로필 이미지 업로드 요청 처리
+	@RequestMapping("/users/private/profile_upload")
+	public String profile_upload(MultipartFile image,
+			HttpServletRequest request) {
+		//서비스를 이용해서 업로드 이미지를 저장하고
+		service.saveProfileImage(image, request);
+		//회원 수정페이지로 다시 리다일렉트 시키기
+		return "redirect:/users/private/updateform.do";
+	}
+	
+	
 	//비밀번호 수정 요청처리
 	@RequestMapping("/users/private/pwd_update")
 	public ModelAndView pwd_update(@ModelAttribute UsersDto dto,
