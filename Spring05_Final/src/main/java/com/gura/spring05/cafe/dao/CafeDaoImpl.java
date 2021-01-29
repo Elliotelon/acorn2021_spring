@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.gura.spring05.cafe.dto.CafeDto;
+import com.gura.spring05.exception.DBFailException;
 @Repository
 public class CafeDaoImpl implements CafeDao{
 	//핵심 의존객체 DI
@@ -21,23 +22,22 @@ public class CafeDaoImpl implements CafeDao{
 	@Override
 	public void update(CafeDto dto) {
 		session.update("cafe.update",dto);
+		
 	}
 
 	@Override
 	public void delete(int num) {
-		session.delete("cafe.delete",num);
+		//삭제된 row의 갯수를 얻어 낸다.
+		int count=session.delete("cafe.delete",num);
+		if(count==0) {//0이면 삭제 실패이다.
+			throw new DBFailException(num+" 번 글을 삭제할 수 없습니다.");
+		}
 	}
 
 	@Override
 	public CafeDto getData(int num) {
 		CafeDto dto=session.selectOne("cafe.getData",num);
 		return dto;
-	}
-
-	@Override
-	public List<CafeDto> getList() {
-		
-		return null;
 	}
 
 	@Override
@@ -59,12 +59,6 @@ public class CafeDaoImpl implements CafeDao{
 	}
 
 	@Override
-	public int getCount() {
-		
-		return 0;
-	}
-
-	@Override
 	public int getCount(CafeDto dto) {
 		/*
 		 * parameterType => CafeDto
@@ -76,6 +70,11 @@ public class CafeDaoImpl implements CafeDao{
 		 */
 		int count=session.selectOne("cafe.getCount", dto);
 		return count;
+	}
+
+	@Override
+	public void addViewCount(int num) {
+		session.update("cafe.addViewCount", num);
 	}
 
 }

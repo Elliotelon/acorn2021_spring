@@ -5,12 +5,16 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/cafe/private/update.jsp</title>
+<title>/views/error/db_fail.jsp</title>
 </head>
 <body>
-<script>
-	alert("수정했습니다.");
-	location.href="${pageContext.request.contextPath}/cafe/detail.do?num=${dto.num}"
-</script>
+<div class="container">
+	<h1>Oops !</h1>
+	<p>${exception.message}</p>
+	<a href="${pageContext.request.contextPath }/">인덱스로 돌아가기</a>
+</div>
 </body>
 </html>
+
+
+

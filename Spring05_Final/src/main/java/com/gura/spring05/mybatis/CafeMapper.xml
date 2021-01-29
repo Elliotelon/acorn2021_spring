@@ -12,7 +12,7 @@
 				WHERE title LIKE '%'||#{title}||'%'
 			</when>
 			<when test="writer != null">
-				WHERE wrtier LIKE '%'||#{writer}||'%'
+				WHERE writer LIKE '%'||#{writer}||'%'
 			</when>
 		</choose>
 	</select>
@@ -31,7 +31,7 @@
 						WHERE title LIKE '%'||#{title}||'%'
 					</when>
 					<when test="writer != null">
-						WHERE wrtier LIKE '%'||#{writer}||'%'
+						WHERE writer LIKE '%'||#{writer}||'%'
 					</when>
 				</choose>
 				ORDER BY num DESC) result1)
@@ -52,9 +52,13 @@
 		WHERE num=#{num}
 	</delete>
 	<select id="getData" parameterType="int" resultType="cafeDto">
-		SELECT writer,title,content,viewCount,regdate
+		SELECT num,writer,title,content,viewCount,regdate
 		FROM board_cafe
 		WHERE num=#{num}
 	</select>
-
+	<update id="addViewCount" parameterType="int">
+		UPDATE board_cafe
+		SET viewCount=viewCount+1
+		WHERE num=#{num}
+	</update>
 </mapper>

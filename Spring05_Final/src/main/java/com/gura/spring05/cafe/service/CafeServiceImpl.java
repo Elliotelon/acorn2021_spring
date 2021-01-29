@@ -117,4 +117,24 @@ public class CafeServiceImpl implements CafeService {
 		
 	}
 
+	@Override
+	public void getDetail(int num, ModelAndView mView) {
+		//글번호를 이용해서 글정보를 얻어오고
+		CafeDto dto=cafeDao.getData(num);
+		//글정보를 ModelAndView 객체에 담고
+		mView.addObject("dto",dto);
+		//글 조회수를 증가 시킨다.
+		cafeDao.addViewCount(num);
+	}
+
+	@Override
+	public void updateContent(CafeDto dto) {
+		cafeDao.update(dto);
+	}
+
+	@Override
+	public void deleteContent(int num) {
+		cafeDao.delete(num);
+	}
+
 }
