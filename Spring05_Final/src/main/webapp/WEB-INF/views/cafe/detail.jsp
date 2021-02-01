@@ -25,10 +25,11 @@
 		margin-top: 5px;
 	}
 	.comments dd{
-		margin-left: 26px;
+		margin-left: 50px;
 	}
 	.comment_form textarea, .comment_form button, 
-		.comment-insert-form textarea, .comment-insert-form button{
+		.comment-insert-form textarea, .comment-insert-form button,
+		.comment-update-form textarea, .comment-update-form button{
 		float: left;
 	}
 	.comments li{
@@ -37,11 +38,11 @@
 	.comments ul li{
 		border-top: 1px solid #888;
 	}
-	.comment_form textarea, .comment-insert-form textarea{
+	.comment_form textarea, .comment-insert-form textarea, .comment-update-form textarea{
 		width: 85%;
 		height: 100px;
 	}
-	.comment_form button, .comment-insert-form button{
+	.comment_form button, .comment-insert-form button, .comment-update-form button{
 		width: 15%;
 		height: 100px;
 	}
@@ -58,6 +59,23 @@
 		top: 1em;
 		left: 1em;
 		color: red;
+	}
+	pre {
+	  display: block;
+	  padding: 9.5px;
+	  margin: 0 0 10px;
+	  font-size: 13px;
+	  line-height: 1.42857143;
+	  color: #333333;
+	  word-break: break-all;
+	  word-wrap: break-word;
+	  background-color: #f5f5f5;
+	  border: 1px solid #ccc;
+	  border-radius: 4px;
+	}
+	/* 글 내용중에 이미지가 있으면 최대 폭을 100%로 제한하기 */
+	.contents img{
+		max-width: 100%;
 	}
 </style>
 </head>
@@ -116,47 +134,67 @@
 	<div class="comments">
 		<ul>
 			<c:forEach var="tmp" items="${commentList}">
-				<li <c:if test="${tmp.num ne tmp.comment_group }">style="padding-left:50px;"</c:if>>
-					<c:if test="${tmp.num ne tmp.comment_group }"><svg class="reply_icon" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-return-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  						<path fill-rule="evenodd" d="M10.146 5.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 9l-2.647-2.646a.5.5 0 0 1 0-.708z"/>
-  						<path fill-rule="evenodd" d="M3 2.5a.5.5 0 0 0-.5.5v4A2.5 2.5 0 0 0 5 9.5h8.5a.5.5 0 0 0 0-1H5A1.5 1.5 0 0 1 3.5 7V3a.5.5 0 0 0-.5-.5z"/></svg>
-					</c:if>
-					<dl>
-						<dt>
-							<c:choose>
-								<c:when test="${empty tmp.profile }">
-									<svg id="profileImage" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-						  				<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-									</svg>
-								</c:when>
-								<c:otherwise>
-									<img id="profileImage" 
-									src="${pageContext.request.contextPath}${tmp.profile}" />
-								</c:otherwise>
-							</c:choose>
-							<span>${tmp.writer }</span>
-							<c:if test="${tmp.num ne tmp.comment_group }">
-								@<strong>${tmp.target_id }</strong>
+				<c:choose>
+					<c:when test="${tmp.deleted eq 'yes' }">
+						<li>삭제된 댓글 입니다.</li>
+					</c:when>
+					<c:otherwise>
+						<li id="comment${tmp.num }" <c:if test="${tmp.num ne tmp.comment_group }">style="padding-left:50px;"</c:if>>
+							<c:if test="${tmp.num ne tmp.comment_group }"><svg class="reply_icon" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-return-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+		  						<path fill-rule="evenodd" d="M10.146 5.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 9l-2.647-2.646a.5.5 0 0 1 0-.708z"/>
+		  						<path fill-rule="evenodd" d="M3 2.5a.5.5 0 0 0-.5.5v4A2.5 2.5 0 0 0 5 9.5h8.5a.5.5 0 0 0 0-1H5A1.5 1.5 0 0 1 3.5 7V3a.5.5 0 0 0-.5-.5z"/></svg>
 							</c:if>
-							<span>${tmp.regdate }</span>
-							<a href="javascript:" class="reply_link">답글</a>
-						</dt>
-						<dd>
-							<pre>${tmp.content}</pre>
-						</dd>
-					</dl>
-					<form class="comment-insert-form" 
-						action="private/comment_insert.do" method="post">
-						<input type="hidden" name="ref_group"
-							value="${dto.num }"/>
-						<input type="hidden" name="target_id"
-							value="${tmp.writer }"/>
-						<input type="hidden" name="comment_group"
-							value="${tmp.comment_group }"/>
-						<textarea name="content"></textarea>
-						<button type="submit">등록</button>
-					</form>				
-				</li>
+							<dl>
+								<dt>
+									<c:choose>
+										<c:when test="${empty tmp.profile }">
+											<svg id="profileImage"  width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					  							<path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+											</svg>
+										</c:when>
+										<c:otherwise>
+											<img id="profileImage" 
+												src="${pageContext.request.contextPath }${tmp.profile }"/>
+										</c:otherwise>
+									</c:choose>
+									<span>${tmp.writer }</span>
+									<c:if test="${tmp.num ne tmp.comment_group }">
+										@<strong>${tmp.target_id }</strong>
+									</c:if>
+									<span>${tmp.regdate }</span>
+									<a href="javascript:" class="reply_link">답글</a>
+									<c:if test="${tmp.writer eq id }">
+										| <a href="javascript:" class="comment-update-link">수정</a>
+										| <a href="javascript:deleteComment(${tmp.num })">삭제</a>
+									</c:if>
+								</dt>
+								<dd>
+									<pre>${tmp.content }</pre>
+								</dd>
+							</dl>
+							<form class="comment-insert-form" 
+								action="private/comment_insert.do" method="post">
+								<input type="hidden" name="ref_group"
+									value="${dto.num }"/>
+								<input type="hidden" name="target_id"
+									value="${tmp.writer }"/>
+								<input type="hidden" name="comment_group"
+									value="${tmp.comment_group }"/>
+								<textarea name="content"></textarea>
+								<button type="submit">등록</button>
+							</form>
+							<!-- 로그인된 아이디와 댓글의 작성자가 같으면 수정 폼 출력 -->
+							<c:if test="${tmp.writer eq id }">
+								<form class="comment-update-form" 
+									action="private/comment_update.do" method="post">
+									<input type="hidden" name="num" value="${tmp.num }"/>
+									<textarea name="content">${tmp.content }</textarea>
+									<button type="submit">수정</button>
+								</form>
+							</c:if>
+						</li>						
+					</c:otherwise>
+				</c:choose>
 			</c:forEach>
 		</ul>
 	</div>
@@ -172,11 +210,31 @@
 		</form>
 	</div>
 </div>
+<script src="${pageContext.request.contextPath }/resources/js/jquery.form.min.js"></script>
 <script>
+	//댓글 수정 링크를 눌렀을때 호출되는 함수 등록
+	$(".comment-update-link").on("click", function(){
+		$(this).parent().parent().parent()
+		.find(".comment-update-form")
+		.slideToggle();
+	});
+	//로딩한 jquery.form.min.js jquery플러그인의 기능을 이용해서 댓글 수정폼을 
+	//ajax 요청을 통해 전송하고 응답받기
+	$(".comment-update-form").ajaxForm(function(data){
+		console.log(data);
+		//수정이 일어난 댓글의 li 요소를 선택해서 원하는 작업을 한다.
+		var selector="#comment"+data.num; //"#comment6" 형식의 선택자 구성
+		
+		//댓글 수정 폼을 안보이게 한다. 
+		$(selector).find(".comment-update-form").slideUp();
+		//pre 요소에 출력된 내용 수정하기
+		$(selector).find("pre").text(data.content);
+	});
+	
 	//답글 달기 링크를 클릭했을때 실행할 함수 등록
 	$(".reply_link").on("click", function(){
 		//로그인 여부
-		var isLogin=${not empty id};
+		var isLogin=${not empty sessionScope.id};
 		if(isLogin == false){
 			alert("로그인 페이지로 이동합니다.")
 			location.href="${pageContext.request.contextPath }/users/loginform.do?"+
@@ -193,7 +251,7 @@
 	});
 	$(".comment_form form").on("submit", function(){
 		//로그인 여부
-		var isLogin=${not empty id};
+		var isLogin=${not empty sessionScope.id};
 		if(isLogin == false){
 			alert("로그인 페이지로 이동합니다.")
 			location.href="${pageContext.request.contextPath }/users/loginform.do?"+
@@ -206,6 +264,14 @@
 		let isDelete=confirm("글을 삭제 하시겠습니까?");
 		if(isDelete){
 			location.href="private/delete.do?num=${dto.num}";
+		}
+	}
+	
+	function deleteComment(num){
+		var isDelete=confirm("댓글을 삭제 하시겠습니까?");
+		if(isDelete){
+			location.href="${pageContext.request.contextPath }"+
+			"/cafe/private/comment_delete.do?num="+num+"&ref_group=${dto.num}";
 		}
 	}
 </script>

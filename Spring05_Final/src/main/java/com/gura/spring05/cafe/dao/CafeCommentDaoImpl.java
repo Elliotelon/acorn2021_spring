@@ -50,4 +50,9 @@ public class CafeCommentDaoImpl implements CafeCommentDao{
 		return seq;
 	}
 
+	@Override
+	public CafeCommentDto getData(int num) {
+		return session.selectOne("cafeComment.getData", num);
+	}
+
 }
