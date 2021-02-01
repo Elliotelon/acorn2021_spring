@@ -234,7 +234,7 @@
 	//답글 달기 링크를 클릭했을때 실행할 함수 등록
 	$(".reply_link").on("click", function(){
 		//로그인 여부
-		var isLogin=${not empty sessionScope.id};
+		var isLogin=${not empty id};
 		if(isLogin == false){
 			alert("로그인 페이지로 이동합니다.")
 			location.href="${pageContext.request.contextPath }/users/loginform.do?"+
