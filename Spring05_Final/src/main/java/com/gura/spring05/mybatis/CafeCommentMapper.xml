@@ -12,7 +12,7 @@
 	</select>
 	<insert id="insert" parameterType="cafeCommentDto">
 		INSERT INTO board_cafe_comment
-		(num, writer, content, target_id, ref_group, comment_group, regate)
+		(num, writer, content, target_id, ref_group, comment_group, regdate)
 		VALUES(#{num}, #{writer}, #{content}, #{target_id}, #{ref_group},
 			#{comment_group}, SYSDATE)
 	</insert>
