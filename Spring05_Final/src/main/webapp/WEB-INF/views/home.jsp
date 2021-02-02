@@ -14,6 +14,7 @@
 	<ul>
 		<li><a href="users/signup_form.do">회원가입</a></li>
 		<li><a href="cafe/private/insertform.do">카페 글쓰러 가기</a></li>
+		<li><a href="file/private/uploadform.do">파일 업로드 하러 가기</a></li>
 	</ul>
 </div>
 </body>
