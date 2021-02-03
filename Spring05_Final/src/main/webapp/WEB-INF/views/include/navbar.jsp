@@ -19,7 +19,7 @@
 					<a class="nav-link" href="${pageContext.request.contextPath }/file/list.do">자료실</a>
 				</li>
 				<li class="nav-item ${param.thisPage eq 'gallery' ? 'active':'' }">
-					<a class="nav-link" href="${pageContext.request.contextPath }/gallery/list.do">겔러리</a>
+					<a class="nav-link" href="${pageContext.request.contextPath }/gallery/list.do">갤러리</a>
 				</li>
 			</ul>
 			<c:choose>
