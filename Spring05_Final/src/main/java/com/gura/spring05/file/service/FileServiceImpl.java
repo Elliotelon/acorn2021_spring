@@ -8,176 +8,154 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartRequest;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.gura.spring05.file.dao.FileDao;
 import com.gura.spring05.file.dto.FileDto;
-import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 @Service
-public class FileServiceImpl implements FileService {
-	
+public class FileServiceImpl implements FileService{
 	@Autowired
-	private FileDao dao;
-
+	private FileDao fileDao;
+	
+	//한 페이지에 나타낼 row 의 갯수
+	final int PAGE_ROW_COUNT=5;
+	//하단 디스플레이 페이지 갯수
+	final int PAGE_DISPLAY_COUNT=5;
+	
 	@Override
-	public void uploadLogic(ModelAndView mView, HttpServletRequest request) {
-		//Tomcat 서버를 실행했을때 WebContent/upload 폴더의 실제 경로 얻어오기
-		String realPath=application.getRealPath("/upload");
-		System.out.println("realPath:"+realPath);
+	public void getList(HttpServletRequest request) {
 		
-		//해당 경로를 access 할 수 있는 파일 객체 생성
-		File f=new File(realPath);
-		if(!f.exists()){//만일 폴더가 존재하지 않으면
-			f.mkdir();//upload 폴더 만들기
-		}
-		//최대 업로드 사이즈 설정
-		int sizeLimit=1024*1024*50; // 50MByte
-		/*
-			WEB-INF/lin/cos.jar 라이브러리가 있으면 아래의 객체를 생성할 수 있다.
-			
-			new MultipartRequest(HttpServletRequest 객체,
-					업로드된 파일을 저장할 절대경로,
-					최대 업로드 사이즈 제한,
-					인코딩설정,
-					DefaultFileRenamePolicy 객체)
-			
-			MultipartRequest 객체가 성공적으로 생성이 된다면 업로드된 파일에 대한 정보도
-			추출할 수 있다.
-		*/
-		// <form enctype="multipart/form-data">로 전송된 값은 아래의 객체를 이용해서 추출한다.
-		MultipartRequest mr=new MultipartRequest(request,
-				realPath,
-				sizeLimit,
-				"utf-8",
-				new DefaultFileRenamePolicy());
-		//폼전송된 내용 추출하기
-		String title=mr.getParameter("title");
-		String orgFileName=mr.getOriginalFileName("myFile");
-		String saveFileName=mr.getFilesystemName("myFile");
-		long fileSize=mr.getFile("myFile").length();
-		
-		//작성자
-		String writer=(String)session.getAttribute("id");
-		
-		//업로드된 파일의 정보를 FileDto에 담고
-		FileDto dto=new FileDto();
-		dto.setWriter(writer);
-		dto.setTitle(title);
-		dto.setOrgFileName(orgFileName);
-		dto.setSaveFileName(saveFileName);
-		dto.setFileSize(fileSize);
-		//DB에 저장하고
-		boolean isSuccess=FileDao.getInstance().insert(dto);
-		//응답하기
-		dao.upload(dto);
-	}
-
-	@Override
-	public void deleteLogic(int num) {
-		dao.delete(num);
-	}
-
-	@Override
-	public FileDto getDataLogic(int num) {
-		
-		return null;
-	}
-
-	@Override
-	public void getListLogic(ModelAndView mView, 
-			HttpServletRequest request) {
-		//한 페이지에 몇개씩 표시할 것인지
-		final int PAGE_ROW_COUNT=5;
-		//하단 페이지를 몇개씩 표시할 것인지
-		final int PAGE_DISPLAY_COUNT=5;
-		
-		//보여줄 페이지의 번호를 일단 1이라고 초기값 지정
+		//보여줄 페이지의 번호
 		int pageNum=1;
-		//페이지 번호가 파라미터로 전달되는지 읽어와 본다.
+		//보여줄 페이지의 번호가 파라미터로 전달되는지 읽어와 본다.	
 		String strPageNum=request.getParameter("pageNum");
-		//만일 페이지 번호가 파라미터로 넘어 온다면
-		if(strPageNum != null){
-			//숫자로 바꿔서 보여줄 페이지 번호로 지정한다.
+		if(strPageNum != null){//페이지 번호가 파라미터로 넘어온다면
+			//페이지 번호를 설정한다.
 			pageNum=Integer.parseInt(strPageNum);
 		}
-		//보여줄 페이지의 시작 ROWNUM
+		//보여줄 페이지 데이터의 시작 ResultSet row 번호
 		int startRowNum=1+(pageNum-1)*PAGE_ROW_COUNT;
-		//보여줄 페이지의 끝 ROWNUM
+		//보여줄 페이지 데이터의 끝 ResultSet row 번호
 		int endRowNum=pageNum*PAGE_ROW_COUNT;
 		/*
-			[검색 키워드에 관련된 처리]
-			-검색 키워드가 파라미터로 넘어올수도 있고 안넘어 올수도 있다.
-		
+			검색 키워드에 관련된 처리 
 		*/
-		String keyword=request.getParameter("keyword");
-		String condition=request.getParameter("condition");
-		
-		//만일 키워드가 넘어오지 않는다면
-		if(keyword==null){
-			//키워드와 검색 조건에 빈문자열을 넣어 준다.
-			//클라이언트 웹브라우저에 출력할때 "null"을 출력되지 않게 하기 위해서
-			keyword="";
+		String keyword=request.getParameter("keyword"); //검색 키워드
+		String condition=request.getParameter("condition"); //검색 조건
+		if(keyword==null){//전달된 키워드가 없다면 
+			keyword=""; //빈 문자열을 넣어준다. 
 			condition="";
 		}
-		//특수기호를 인코딩한 키워드를 미리 준비한다.
+		//인코딩된 키워드를 미리 만들어 둔다. 
 		String encodedK=URLEncoder.encode(keyword);
 		
-		//startRowNum 과 endRowNum  을 CafeDto 객체에 담고
+		//검색 키워드와 startRowNum, endRowNum 을 담을 FileDto 객체 생성
 		FileDto dto=new FileDto();
 		dto.setStartRowNum(startRowNum);
 		dto.setEndRowNum(endRowNum);
 		
-		//ArrayList 객체의 참조값을 담을 지역변수를 미리 만든다.
-		List<FileDto> list=null;
-		//전체 row의 갯수를 담을 지역변수를 미리 만든다.
-		int totalRow=0;
-		
-		//만일 검색 키워드가 넘어온다면
-		if(!keyword.equals("")){
-			//검색 조건이 무엇이냐에 따라 분기하기
-			if(condition.equals("title_filename")){// 제목+파일명 검색인 경우
-				//검색 키워드를 FileDto에 담아서 전달한다.
+		if(!keyword.equals("")){ //만일 키워드가 넘어온다면 
+			if(condition.equals("title_filename")){
+				//검색 키워드를 FileDto 객체의 필드에 담는다. 
 				dto.setTitle(keyword);
-				dto.setOrgFileName(keyword);
-			}else if(condition.equals("title")){// 제목 검색인 경우
+				dto.setOrgFileName(keyword);	
+			}else if(condition.equals("title")){
 				dto.setTitle(keyword);
-			}else if(condition.equals("writer")){// 작성자 검색인 경우
+			}else if(condition.equals("writer")){
 				dto.setWriter(keyword);
-			}//다른 검색 조건을 추가 하고 싶다면 아래에 else if()를 계속 추가하면 된다.
-		}	
-		
-		//글목록 얻어오기
-		list=dao.getList(dto);
-		//글의 갯수
-		totalRow=dao.getCount(dto);
-		
-		int startPageNum=1+((pageNum-1)/PAGE_DISPLAY_COUNT)*PAGE_DISPLAY_COUNT;
-		int endPageNum=startPageNum+PAGE_DISPLAY_COUNT-1;
+			}
+		}
+		//파일 목록 얻어오기
+		List<FileDto> list=fileDao.getList(dto);
+		//전체 row 의 갯수 
+		int totalRow=fileDao.getCount(dto);
 		
 		//전체 페이지의 갯수 구하기
-		int totalPageCount=(int)Math.ceil(totalRow/(double)PAGE_ROW_COUNT);
-		
-		//끝 페이지 번호가 이미 전체 페이지 갯수보다 크게 계산되었다면 잘못된 값이다.
-		if(endPageNum>totalPageCount){
-			endPageNum=totalPageCount; //보정해준다.
+		int totalPageCount=
+				(int)Math.ceil(totalRow/(double)PAGE_ROW_COUNT);
+		//시작 페이지 번호
+		int startPageNum=
+			1+((pageNum-1)/PAGE_DISPLAY_COUNT)*PAGE_DISPLAY_COUNT;
+		//끝 페이지 번호
+		int endPageNum=startPageNum+PAGE_DISPLAY_COUNT-1;
+		//끝 페이지 번호가 잘못된 값이라면 
+		if(totalPageCount < endPageNum){
+			endPageNum=totalPageCount; //보정해준다. 
 		}
-		//view page 에서 필요한 내용을 ModelAndView 객체에 담아준다
-		mView.addObject("list", list);
-		mView.addObject("pageNum", pageNum);
-		mView.addObject("startPageNum", startPageNum);
-		mView.addObject("endPageNum", endPageNum);
-		mView.addObject("totalPageCount", totalPageCount);
-		mView.addObject("condition", condition);
-		mView.addObject("keyword", keyword);
-		mView.addObject("encodedK", encodedK);
-		mView.addObject("totalRow", totalRow);
+		
+		//EL 에서 사용할 값을 미리 request 에 담아두기
+		request.setAttribute("list", list);
+		request.setAttribute("startPageNum", startPageNum);
+		request.setAttribute("endPageNum", endPageNum);
+		request.setAttribute("pageNum", pageNum);
+		request.setAttribute("totalPageCount", totalPageCount);
+		request.setAttribute("condition", condition);
+		request.setAttribute("keyword", keyword);
+		request.setAttribute("encodedK", encodedK);		
 	}
 
 	@Override
-	public int getCountLogic(FileDto dto) {
+	public void saveFile(FileDto dto, ModelAndView mView, 
+				HttpServletRequest request) {
+		//업로드된 파일의 정보를 가지고 있는 MultipartFile 객체의 참조값 얻어오기 
+		MultipartFile myFile=dto.getMyFile();
+		//원본 파일명
+		String orgFileName=myFile.getOriginalFilename();
+		//파일의 크기
+		long fileSize=myFile.getSize();
 		
-		return 0;
+		// webapp/upload 폴더 까지의 실제 경로(서버의 파일시스템 상에서의 경로)
+		String realPath=request.getServletContext().getRealPath("/upload");
+		//저장할 파일의 상세 경로
+		String filePath=realPath+File.separator;
+		//디렉토리를 만들 파일 객체 생성
+		File upload=new File(filePath);
+		if(!upload.exists()) {//만일 디렉토리가 존재하지 않으면 
+			upload.mkdir(); //만들어 준다.
+		}
+		//저장할 파일 명을 구성한다.
+		String saveFileName=
+				System.currentTimeMillis()+orgFileName;
+		try {
+			//upload 폴더에 파일을 저장한다.
+			myFile.transferTo(new File(filePath+saveFileName));
+			System.out.println(filePath+saveFileName);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		//dto 에 업로드된 파일의 정보를 담는다.
+		String id=(String)request.getSession().getAttribute("id");
+		dto.setWriter(id); //세션에서 읽어낸 파일 업로더의 아이디 
+		dto.setOrgFileName(orgFileName);
+		dto.setSaveFileName(saveFileName);
+		dto.setFileSize(fileSize);
+		//fileDao 를 이용해서 DB 에 저장하기
+		fileDao.insert(dto);
+		//view 페이지에서 사용할 모델 담기 
+		mView.addObject("dto", dto);
 	}
+
+	@Override
+	public void getFileData(int num, ModelAndView mView) {
+		//fileDao 를 이용해서 파일 정보를 얻어온 다음
+		FileDto dto=fileDao.getData(num);
+		//mView 객체에 담는다.
+		mView.addObject("dto", dto);
+	}
+
+	@Override
+	public void deleteFile(int num, HttpServletRequest request) {
+		//삭제할 파일의 정보 얻어오기 
+		FileDto dto=fileDao.getData(num);
+		//파일 시스템에서 파일 삭제
+		String saveFileName=dto.getSaveFileName();
+		String path=request.getServletContext().getRealPath("/upload")+
+				File.pathSeparator+saveFileName;
+		new File(path).delete();
+		//DB 에서 파일 정보 삭제 
+		fileDao.delete(num);
+	}
+	
 }
+
