@@ -1,4 +1,3 @@
-  
 package com.gura.spring05.gallery.dao;
 
 import java.util.List;
@@ -11,3 +10,5 @@ public interface GalleryDao {
 	public List<GalleryDto> getList(GalleryDto dto);
 	public int getCount();
 }
+
+

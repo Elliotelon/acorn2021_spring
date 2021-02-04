@@ -12,9 +12,9 @@
 		<typeAlias type="com.gura.spring05.cafe.dto.CafeCommentDto"
 			alias="cafeCommentDto"/>
 		<typeAlias type="com.gura.spring05.file.dto.FileDto"
-			alias="fileDto"/>	
+			alias="fileDto"/>
 		<typeAlias type="com.gura.spring05.gallery.dto.GalleryDto"
-			alias="galleryDto"/>	
+			alias="galleryDto"/>		
 	</typeAliases>
 	
 	<!-- Mapper xml 문서의 위치  설정 -->
