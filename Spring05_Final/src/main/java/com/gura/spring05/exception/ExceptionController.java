@@ -9,15 +9,23 @@ import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice
 public class ExceptionController {
-	
+	//NotAllowException type의 예외가 발생하면 호출되는 메소드
+	@ExceptionHandler(NotAllowException.class)
+	public ModelAndView notAllow(NotAllowException ne) {
+		ModelAndView mView=new ModelAndView();
+		mView.addObject("exception", ne);
+		mView.setViewName("error/not_allow");
+		return mView;
+	}
 	@ExceptionHandler(DBFailException.class)
 	public ModelAndView dbFail(DBFailException e, ModelAndView mView) {
-		//"exceptino" 이라는 키 값으로 예외객체의 참조값을 담고
+		//"exception" 이라는 키 값으로 예외객체의 참조값을 담고
 		//담은 예외 객체는 view page 에서${exception.message} 형태로 사용한다.
 		mView.addObject("exception",e);
 		mView.setViewName("error/db_fail");
 		return mView;
 		
 	}
+	
 	
 }
