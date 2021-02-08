@@ -126,7 +126,7 @@ public class UsersController {
 	public String signup(@ModelAttribute("dto") UsersDto dto) {
 		/*
 		 * Dto인 경우에 @ModelAttribute("key 값") 으로 설정하면
-		 * 해당 Dto 가 request 영역에 설정한 "key 값" 으로 닥민다.
+		 * 해당 Dto 가 request 영역에 설정한 "key 값" 으로 담긴다.
 		 * 
 		 */
 		service.addUser(dto);

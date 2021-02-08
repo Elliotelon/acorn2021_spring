@@ -1,5 +1,11 @@
 package com.gura.spring05.aspect;
-
+/*
+ * aspect를 사용하는 이유는 
+ * 메소드안에 공통으로 사용해야 하는 코드가 있는 경우 
+ * 메소드를 작성할때마다 공통된 코드를 작성하지 않고
+ * aspect에 미리 공통된 코드를 작성해두고 사용하면 효율적으로 코드를 작성할 수 있기 때문이다.
+ *  
+ */
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;

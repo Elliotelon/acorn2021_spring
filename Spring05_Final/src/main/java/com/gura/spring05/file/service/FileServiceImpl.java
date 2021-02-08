@@ -148,6 +148,11 @@ public class FileServiceImpl implements FileService{
 
 	@Override
 	public void deleteFile(int num, HttpServletRequest request) {
+		//아래코드를 실행하기전에 aspect 패키지에 클래스의 내용확인하고
+		//위 메소드(deleteFile)와 관련된 aspect를 먼저 실행한다. 
+		//실행중 Exception이 발생하면 ExceptionController 에서 관련 Exception을 수행한다.
+		//실행중 Exception이 발생하지 않으면 aspect를 모두 수행한뒤 위 메소드(deleteFile)가 실행 된다.  
+		
 		//삭제할 파일의 정보 얻어오기 
 		FileDto dto=fileDao.getData(num);
 		

@@ -34,11 +34,10 @@
 		FROM users
 		WHERE id=#{id}
 	</select>
-	<select id="isValid" parameterType="usersDto"
-	resultType="String">
-		SELECT id
+	<select id="getPwd" parameterType="String" resultType="String">
+		SELECT pwd
 		FROM users
-		WHERE id=#{id} AND pwd=#{pwd}
+		WHERE id=#{id}
 	</select>
 	<insert id="insert" parameterType="usersDto">
 		INSERT INTO users
