@@ -6,12 +6,6 @@
 		SET profile=#{profile}
 		WHERE id=#{id}
 	</update>
-	<select id="isExist" parameterType="String"
-	resultType="usersDto">
-		SELECT * 
-		FROM users
-		WHERE id=#{id}
-	</select>
 	<update id="updatePwd" parameterType="usersDto">
 		UPDATE users
 		SET pwd=#{newPwd}
@@ -22,20 +16,13 @@
 		SET email=#{email}
 		WHERE id=#{id}
 	</update>
-	<delete id="delete" parameterType="String">
+	<delete id="delete" parameterType="java.lang.String">
 		DELETE FROM users
 		WHERE id=#{id}
 	</delete>
-	<select id="getData" parameterType="String"
-	resultType="usersDto">
-		<!-- 칼럼명과 필드명이 같아야 하기때문에 AS regdate 붙여야 함. -->
+	<select id="getData" parameterType="String" resultType="usersDto">
 		SELECT pwd,email,profile,
 			TO_CHAR(regdate, 'YY.MM.DD HH24:MI') AS regdate
-		FROM users
-		WHERE id=#{id}
-	</select>
-	<select id="getPwd" parameterType="String" resultType="String">
-		SELECT pwd
 		FROM users
 		WHERE id=#{id}
 	</select>
@@ -44,4 +31,14 @@
 		(id, pwd, email, regdate)
 		VALUES(#{id}, #{pwd}, #{email}, SYSDATE)
 	</insert>
+	<select id="isExist" parameterType="String" resultType="usersDto">
+		SELECT *
+		FROM users
+		WHERE id=#{id}
+	</select>
+	<select id="getPwd" parameterType="String" resultType="String">
+		SELECT pwd
+		FROM users
+		WHERE id=#{id}
+	</select>
 </mapper>
