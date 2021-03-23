@@ -142,6 +142,41 @@ public class GalleryServiceImpl implements GalleryService{
 		GalleryDto dto=dao.getData(num);
 		mView.addObject("dto", dto);
 	}
+
+	@Override
+	public void saveContentFromAndroid(GalleryDto dto, HttpServletRequest request) {
+		//업로드된 파일의 정보를 가지고 있는 MultipartFile 객체의 참조값 얻어오기 
+		MultipartFile myFile=dto.getImage();
+		//원본 파일명
+		String orgFileName=myFile.getOriginalFilename();
+		
+		// webapp/upload 폴더 까지의 실제 경로(서버의 파일시스템 상에서의 경로)
+		String realPath=request.getServletContext().getRealPath("/upload");
+		//저장할 파일의 상세 경로
+		String filePath=realPath+File.separator;
+		//디렉토리를 만들 파일 객체 생성
+		File upload=new File(filePath);
+		if(!upload.exists()) {//만일 디렉토리가 존재하지 않으면 
+			upload.mkdir(); //만들어 준다.
+		}
+		//저장할 파일 명을 구성한다.
+		String saveFileName=
+				System.currentTimeMillis()+orgFileName;
+		try {
+			//upload 폴더에 파일을 저장한다.
+			myFile.transferTo(new File(filePath+saveFileName));
+			System.out.println(filePath+saveFileName);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		//안드로이드에서 writer는 직접 전송이 되도록 할 예정이므로 2줄 코드는 필요 없다.
+		//dto 에 업로드된 파일의 정보를 담는다.
+		//String id=(String)request.getSession().getAttribute("id");
+		//dto.setWriter(id); //세션에서 읽어낸 파일 업로더의 아이디 
+		dto.setImagePath("/upload/"+saveFileName);
+		//GalleryDao 를 이용해서 DB 에 저장하기;
+		dao.insert(dto);
+	}
 	
 }
 	

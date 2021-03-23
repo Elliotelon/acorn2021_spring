@@ -11,8 +11,10 @@ import com.gura.spring05.gallery.dto.GalleryDto;
 public interface GalleryService {
 	public void getList(ModelAndView mView, HttpServletRequest request);
 	public void saveContent(GalleryDto dto, HttpServletRequest request);
+	public void saveContentFromAndroid(GalleryDto dto, HttpServletRequest request);
 	public String saveImage(MultipartFile image, HttpServletRequest request);
 	public void addContent(GalleryDto dto, HttpSession session);
 	public void getDetail(int num, ModelAndView mView);
+
 }
 

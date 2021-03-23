@@ -44,6 +44,20 @@ public class GalleryController {
 		service.saveContent(dto, request);
 		return "redirect:/gallery/list.do";
 	}
+	/*
+	 * 안드로이드 앱에서 업로는 하는 이미지 파일을 저장하는 메소드
+	 * 응답은 JSON 문자열로
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/gallery/upload_android", method = RequestMethod.POST)
+	public Map<String, Object> uploadFromAndroid(GalleryDto dto, HttpServletRequest request) {
+		service.saveContentFromAndroid(dto, request);
+		
+		// {"isSuccess" : true} 형식의 문자열을 응답할 Map 객체
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("isSuccess", true);
+		return map;
+	}
 	@RequestMapping("/gallery/private/ajax_form")
 	public String ajaxForm() {
 		
