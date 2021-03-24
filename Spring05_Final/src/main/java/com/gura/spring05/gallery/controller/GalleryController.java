@@ -1,6 +1,7 @@
 package com.gura.spring05.gallery.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.gura.spring05.gallery.dao.GalleryDao;
 import com.gura.spring05.gallery.dto.GalleryDto;
 import com.gura.spring05.gallery.service.GalleryService;
 
@@ -58,6 +60,21 @@ public class GalleryController {
 		map.put("isSuccess", true);
 		return map;
 	}
+	/*
+	 * 안드로이드 앱에서 전체 이미지 목록을 요청하면 JSON 문자열로 응답하는 메소드
+	 * 
+	 */
+	@Autowired
+	private GalleryDao dao;
+	
+	@ResponseBody
+	@RequestMapping("/gallery/list_android")
+	public List<GalleryDto> getListAll(){
+		
+		return dao.getListAll();
+	}
+	
+	
 	@RequestMapping("/gallery/private/ajax_form")
 	public String ajaxForm() {
 		

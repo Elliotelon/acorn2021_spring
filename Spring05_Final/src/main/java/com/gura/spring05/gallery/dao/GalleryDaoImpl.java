@@ -33,6 +33,11 @@ public class GalleryDaoImpl implements GalleryDao{
 
 		return session.selectOne("gallery.getCount");
 	}
-
+	//안드로이드 테스트를 위한 메소드
+	@Override
+	public List<GalleryDto> getListAll() {
+		
+		return session.selectList("gallery.getListAll");
+	}
 }
 	
